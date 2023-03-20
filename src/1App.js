@@ -7,8 +7,10 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
+          Meu primeiro teste
           Edit <code>src/App.js</code> and save to reload.
         </p>
+        <label className='text-danger'>Isso é danger</label>
         <a
           className="App-link"
           href="https://reactjs.org"
