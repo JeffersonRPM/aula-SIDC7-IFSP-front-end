@@ -24,4 +24,12 @@ npm start
 * `npx create-react-app loja`
 * `cd loja`
 * `npm start`
+
+## Instalar as dependências
+
+* No terminal do node digite: 
+
+``` 
+npm install
+```
             
