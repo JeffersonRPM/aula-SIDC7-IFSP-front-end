@@ -4,9 +4,9 @@ import './index.css';
 import { ToastProvider } from 'react-toast-notifications';
 import App from './App';
 
-
 ReactDOM.render(
   <ToastProvider>
     <App />
-  </ToastProvider>
+  </ToastProvider>,
+  document.getElementById('root')
 );
