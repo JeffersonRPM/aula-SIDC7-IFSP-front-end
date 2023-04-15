@@ -5,19 +5,58 @@ import Swal from "sweetalert2";
 import { useToasts } from "react-toast-notifications";
 import LoadingOverlay from "react-loading-overlay";
 import { Modal } from "react-bootstrap";
+import DataTable from "react-data-table-component";
 
 const Categoria = () => {
 
-    const [ modal, setModal ] = useState(false);
-    const [ acao, setAcao ] = useState();
+    const { addToast } = useToasts();
+    const [modal, setModal] = useState(false);
+    const [acao, setAcao] = useState();
+    const [categoria, setCategoria] = useState();
+    const [carregar, setCarregar] = useState(false);
+    const [listaDados, setListaDados] = useState([]);
+
+    useEffect(() => {
+        listar();
+    }, []);
 
     function adicionar() {
         setModal(true);
+        setCategoria({});
         setAcao('Adicionar');
+    }
+
+    function listar() {
+        setCarregar(true);
+        Api.get("categoria/listar").then(rps => {
+            setListaDados(rps.data.obj);
+            setCarregar(false);
+        });
     }
 
     function fecharModal() {
         setModal(false);
+    }
+
+    function salvar() {
+        Api.post('categoria/adicionar', categoria).then(rps => {
+            if (rps.data.status === true) {
+                addToast(rps.data.mensagem, {
+                    appearance: "success",
+                    autoDismiss: true,
+                    autoDismissTimeout: 2000
+                });
+                setModal(false);
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    icon: 'error',
+                    html: rps.data.erros,
+                    showCloseButton: true,
+                    showCancelButton: false,
+                })
+            }
+        })
     }
 
     return (
@@ -84,16 +123,38 @@ const Categoria = () => {
             {/*end::Wrapper*/}
             {/*end::Page*/}
             {/*end::Main*/}
-        <Modal size={"x1"} show={modal} onHide={() => fecharModal()}>
-            <Modal.Header>
-                <Modal.Title>Categoria</Modal.Title>
-            </Modal.Header>
+            <Modal size={"x1"} show={modal} onHide={() => fecharModal()}>
+                <Modal.Header>
+                    <Modal.Title>Categoria</Modal.Title>
+                </Modal.Header>
 
-            <Modal.Footer>
-                <button type="button" onClick={e => {fecharModal()}}
-                className="btn btn-secondary">Fechar</button>
-            </Modal.Footer>
-        </Modal>
+                <div className="row ml-5 mr-5 mt-5">
+                    <div className="form-group col-md-10">
+                        <label>Descrição</label>
+                        <input type="text" className="form-control"
+                            onChange={e => { setCategoria({ ...categoria, nome: e.target.value }) }}
+                            valu={categoria?.nome} />
+                    </div>
+
+                    <div className="form-group col-md-2">
+                        <label>Status</label>
+                        <select className="form-control"
+                            value={categoria?.status}
+                            onChange={e => { setCategoria({ ...categoria, status: e.target.value }) }}>
+                            <option value="" selected>Selecione</option>
+                            <option value="S" selected>Ativo</option>
+                            <option value="N" selected>Desativado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <Modal.Footer>
+                    <button type="button" onClick={e => { fecharModal() }}
+                        className="btn btn-secondary">Fechar</button>
+                    <button type="button" onClick={e => { salvar() }}
+                        className="btn btn-primary">Salvar</button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }
