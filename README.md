@@ -24,3 +24,4 @@ npm start
 * `npx create-react-app loja`
 * `cd loja`
 * `npm start`
+ 
