@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import Login from '../pages/login';
 import Painel from '../pages/painel';
 import Categoria from '../pages/categoria';
+import Usuario from '../pages/usuario';
+import Produto from '../pages/produto';
 
 // Verificar se o usuário está autenticado
 const isAuthenticated = () => {
@@ -18,6 +20,7 @@ const isAuthenticated = () => {
             'Você não está logado, tente novamente.',
             'error'
         )
+        setTimeout(() => { window.location.reload(); }, 3000);
         return false
     }
 };
@@ -47,6 +50,8 @@ const Routes = (props) => (
             <Layout>
                 <AuthenticatedRoute exact path="/painel" component={Painel} />
                 <AuthenticatedRoute exact path="/categoria" component={Categoria} />
+                <AuthenticatedRoute exact path="/usuario" component={Usuario} />
+                <AuthenticatedRoute exact path="/produto" component={Produto} />
             </Layout>
         </Switch>
     </HashRouter>

@@ -7,11 +7,11 @@ import LoadingOverlay from "react-loading-overlay";
 import { Modal, ModalTitle } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
-const Categoria = () => {
+const Usuario = () => {
     const { addToast } = useToasts();
     const [ modal, setModal ] = useState(false);
     const [ acao, setAcao ] = useState();
-    const [ categoria, setCategoria ]  = useState();
+    const [ usuario, setUsuario ]  = useState();
     const [ carregar, setCarregar ] = useState(false);
     const [ listaDados, setListaDados ] = useState([]);
 
@@ -75,13 +75,13 @@ const Categoria = () => {
 
     function adicionar() {
         setModal(true);
-        setCategoria({});
+        setUsuario({});
         setAcao('Adicionar');
     }
 
     function editar(registro) {
       var cad = JSON.parse(JSON.stringify(registro));
-      setCategoria(cad);
+      setUsuario(cad);
       setAcao('Editar');
       setModal(true);
     }
@@ -117,7 +117,7 @@ const Categoria = () => {
 
     function listar() {
       setCarregar(true);
-      Api.get("categoria/listar").then(rps => {
+      Api.get("usuario/listar").then(rps => {
         setListaDados(rps.data.obj);
         setCarregar(false);
       })
@@ -128,7 +128,7 @@ const Categoria = () => {
     }
 
     function salvar() {
-      Api.post('categoria/adicionar', categoria).then(rps => {
+      Api.post('usuario/adicionar', usuario).then(rps => {
         if (rps.data.status === true) {
           addToast(rps.data.mensagem, {
             appearance: "success",
@@ -156,7 +156,7 @@ const Categoria = () => {
             {/*begin::Details*/}
             <div className="d-flex align-items-center flex-wrap mr-2">
               {/*begin::Title*/}
-              <h5 className="text-dark font-weight-bold mt-6 mb-2 mr-5">Categoria</h5>
+              <h5 className="text-dark font-weight-bold mt-6 mb-2 mr-5">Usuário</h5>
               {/*end::Title*/}
               {/*begin::Separator*/}
               <div className="subheader-separator subheader-separator-ver mt-6 mb-2 mr-5 bg-gray-200" />
@@ -182,7 +182,7 @@ const Categoria = () => {
         {/*begin::Row*/}
         <div className="row">
           <DataTable
-            title="Lista de Categoria"
+            title="Lista de Usuário"
             columns={columns}
             data={data}
             striped="true"
@@ -224,26 +224,51 @@ const Categoria = () => {
 
         <Modal size={"xl"} show={modal} onHide={() => fecharModal()}>
             <Modal.Header>
-                <Modal.Title>Categoria</Modal.Title>
+                <Modal.Title>{acao} Usuário</Modal.Title>
             </Modal.Header>
 
             <div className="row ml-5 mr-5 mt-5">
               <div className="form-group col-md-10">
-                <label>Descrição</label>
+                <label>Nome</label>
                 <input type="text" className="form-control" 
-                onChange={e => {setCategoria({...categoria, nome: e.target.value})}} 
-                value={categoria?.nome}/>
+                onChange={e => {setUsuario({...usuario, nome: e.target.value})}} 
+                value={usuario?.nome}/>
               </div>
 
               <div className="form-group col-md-2">
                 <label>Status</label>
                 <select className="form-control" 
-                  value={categoria?.status}
-                  onChange={e => {setCategoria({...categoria, status: e.target.value})}}>
+                  value={usuario?.status}
+                  onChange={e => {setUsuario({...usuario, status: e.target.value})}}>
                     <option value="" selected>Selecione</option>
                     <option value="S">Ativo</option>
                     <option value="N">Desativado</option>
                 </select>
+              </div>
+            </div>
+
+            <div className="row ml-5 mr-5">
+              <div className="form-group col-md-12">
+                <label>E-mail</label>
+                <input type="text" className="form-control" 
+                onChange={e => {setUsuario({...usuario, email: e.target.value})}} 
+                value={usuario?.email}/>
+              </div>
+            </div>
+
+            <div className="row ml-5 mr-5">
+              <div className="form-group col-md-4">
+                <label>Senha</label>
+                <input type="password" className="form-control" 
+                onChange={e => {setUsuario({...usuario, senha: e.target.value})}} 
+                />
+              </div>
+
+              <div className="form-group col-md-4">
+                <label>Confirmação de Senha</label>
+                <input type="password" className="form-control" 
+                onChange={e => {setUsuario({...usuario, confsenha: e.target.value})}} 
+                />
               </div>
             </div>
 
@@ -258,4 +283,4 @@ const Categoria = () => {
     );
 }
 
-export default withRouter(Categoria);
+export default withRouter(Usuario);

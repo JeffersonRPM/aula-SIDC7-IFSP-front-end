@@ -15,7 +15,6 @@ const setLocalStorage = (data) => {
         localStorage.setItem('nome', data.usuario.nome)
         localStorage.setItem('hash', 1)
 
-
         return true;
     } catch (error) {
         console.log('Erro ao armazenar session 2')
