@@ -6,18 +6,33 @@ import { useToasts } from "react-toast-notifications";
 import LoadingOverlay from "react-loading-overlay";
 import { Modal, ModalTitle } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import Select from "react-select";
 
-const Categoria = () => {
+const Produto = () => {
     const { addToast } = useToasts();
     const [ modal, setModal ] = useState(false);
     const [ acao, setAcao ] = useState();
-    const [ categoria, setCategoria ]  = useState();
-    const [ carregar, setCarregar ] = useState(false);
+    const [ produto, setProduto ] = useState(false);
     const [ listaDados, setListaDados ] = useState([]);
+    const [ carregar, setCarregar ] = useState(false);
+    const [ categoriaSelect, setCategoriaSelect ] = useState([]);
 
     useEffect(() => {
       listar();
+      listarCategoria();
     }, []);
+
+    function listarCategoria() {
+      Api.get("categoria/listarcategoria").then((rps) => {
+        var cat = rps.data.obj;
+        var nCat = []      
+        nCat[nCat.length] = { value: "", label: "Selecione..."};
+        cat.forEach((e) => {
+          nCat[nCat.length] = { value: e.id, label: e.nome}
+        });
+        setCategoriaSelect(nCat);
+      })
+    }
 
     const data = listaDados;
     const columns = [
@@ -25,34 +40,68 @@ const Categoria = () => {
         name: <th>Código</th>,
         selector: 'id',
         sortable: true,
-        width: '10%',
+        width: '4%',
         center: true,
       },
       {
-        name: <th>Descrição</th>,
+        name: <th>Nome</th>,
         selector: 'nome',
         sortable: true,
-        width: '25%',
+        width: '9%',
+      },
+      {
+        name: <th>Descrição</th>,
+        selector: 'descricao',
+        sortable: true,
+        width: '20%',
       },
       {
         name: <th>Data Cadastro</th>,
         selector: 'data_cad',
         sortable: true,
-        width: '17%',
+        width: '12%',
         center: true,
       },
       {
         name: <th>Data Alteração</th>,
         selector: 'data_alt',
         sortable: true,
-        width: '17%',
+        width: '12%',
+        center: true,
+      },
+      {
+        name: <th>Cod. Categoria</th>,
+        selector: 'id_categoria',
+        sortable: true,
+        width: '6%',
+        center: true,
+      },
+      {
+        name: <th>Valor Compra</th>,
+        selector: 'valor_compra',
+        sortable: true,
+        width: '7%',
+        center: true,
+      },
+      {
+        name: <th>Valor Venda</th>,
+        selector: 'valor_venda',
+        sortable: true,
+        width: '7%',
+        center: true,
+      },
+      {
+        name: <th>Estoque</th>,
+        selector: 'estoque',
+        sortable: true,
+        width: '5%',
         center: true,
       },
       {
         name: <th>Status</th>,
         selector: 'status',
         sortable: true,
-        width: '12%',
+        width: '6%',
         center: true,
         cell: row => { if (row.status == "S") 
         {return <span class="label label-success label-inline">Ativo</span>}
@@ -75,13 +124,13 @@ const Categoria = () => {
 
     function adicionar() {
         setModal(true);
-        setCategoria({});
+        setProduto({});
         setAcao('Adicionar');
     }
 
     function editar(registro) {
       var cad = JSON.parse(JSON.stringify(registro));
-      setCategoria(cad);
+      setProduto(cad);
       setAcao('Editar');
       setModal(true);
     }
@@ -100,7 +149,7 @@ const Categoria = () => {
         cancelButtonText: 'Não, Cancelar'
       }).then((result) => {
         if (result.isConfirmed) {
-          Api.post('categoria/excluir', cad).then(rps => {
+          Api.post('produto/excluir', cad).then(rps => {
             if (rps.data.status == true) {
               addToast(rps.data.mensagem, {
                 appearance: 'success',
@@ -117,7 +166,7 @@ const Categoria = () => {
 
     function listar() {
       setCarregar(true);
-      Api.get("categoria/listar").then(rps => {
+      Api.get("produto/listar").then(rps => {
         setListaDados(rps.data.obj);
         setCarregar(false);
       })
@@ -128,7 +177,7 @@ const Categoria = () => {
     }
 
     function salvar() {
-      Api.post('categoria/adicionar', categoria).then(rps => {
+      Api.post('produto/adicionar', produto).then(rps => {
         if (rps.data.status === true) {
           addToast(rps.data.mensagem, {
             appearance: "success",
@@ -156,7 +205,7 @@ const Categoria = () => {
             {/*begin::Details*/}
             <div className="d-flex align-items-center flex-wrap mr-2">
               {/*begin::Title*/}
-              <h5 className="text-dark font-weight-bold mt-6 mb-2 mr-5">Categoria</h5>
+              <h5 className="text-dark font-weight-bold mt-6 mb-2 mr-5">Produto</h5>
               {/*end::Title*/}
               {/*begin::Separator*/}
               <div className="subheader-separator subheader-separator-ver mt-6 mb-2 mr-5 bg-gray-200" />
@@ -182,7 +231,7 @@ const Categoria = () => {
         {/*begin::Row*/}
         <div className="row">
           <DataTable
-            title="Lista de Categoria"
+            title="Lista de Produto"
             columns={columns}
             data={data}
             striped="true"
@@ -224,22 +273,22 @@ const Categoria = () => {
 
         <Modal size={"xl"} show={modal} onHide={() => fecharModal()}>
             <Modal.Header>
-                <Modal.Title>Categoria</Modal.Title>
+                <Modal.Title>Produto</Modal.Title>
             </Modal.Header>
 
             <div className="row ml-5 mr-5 mt-5">
               <div className="form-group col-md-10">
-                <label>Descrição</label>
+                <label>Nome</label>
                 <input type="text" className="form-control" 
-                onChange={e => {setCategoria({...categoria, nome: e.target.value})}} 
-                value={categoria?.nome}/>
+                onChange={e => {setProduto({...produto, nome: e.target.value})}} 
+                value={produto?.nome}/>
               </div>
 
               <div className="form-group col-md-2">
                 <label>Status</label>
                 <select className="form-control" 
-                  value={categoria?.status}
-                  onChange={e => {setCategoria({...categoria, status: e.target.value})}}>
+                  value={produto?.status}
+                  onChange={e => {setProduto({...produto, status: e.target.value})}}>
                     <option value="" selected>Selecione</option>
                     <option value="S">Ativo</option>
                     <option value="N">Desativado</option>
@@ -247,6 +296,50 @@ const Categoria = () => {
               </div>
             </div>
 
+            <div className="row ml-5 mr-5 mt-5">
+              <div className="form-group col-md-9">
+                <label>Descrição</label>
+                <input type="text" className="form-control" 
+                onChange={e => {setProduto({...produto, descricao: e.target.value})}} 
+                value={produto?.descricao}/>
+              </div>
+
+              <div className="form-group col-md-3">
+                <label>Estoque</label>
+                <input type="text" className="form-control" 
+                onChange={e => {setProduto({...produto, estoque: e.target.value})}} 
+                value={produto?.estoque}/>
+              </div>
+            </div>
+
+            <div className="row ml-5 mr-5 mt-5">
+              <div className="form-group col-md-6">
+                <label>Valor da compra</label>
+                <input type="text" className="form-control" 
+                onChange={e => {setProduto({...produto, valor_compra: e.target.value})}} 
+                value={produto?.valor_compra}/>
+              </div>
+
+              <div className="form-group col-md-6">
+                <label>Valor da venda</label>
+                <input type="text" className="form-control" 
+                onChange={e => {setProduto({...produto, valor_venda: e.target.value})}} 
+                value={produto?.valor_venda}/>
+              </div>
+            </div>
+
+            <div className="row ml-5 mr-5">
+              <div className="form-group col-md-12">
+                <label>Categoria</label>
+                <Select
+                  options={categoriaSelect}
+                  placeholder="Selecione..."
+                  defaultValue={categoriaSelect.find(
+                    (x) => x.value === produto?.id_categoria
+                  )}
+                  onChange={e => {setProduto({...produto, id_categoria: e.value})}}/>
+              </div>
+            </div>
             <Modal.Footer>
                 <button type="button" onClick={e => {fecharModal()}}
                 className="btn btn-secondary">Fechar</button>
@@ -258,4 +351,4 @@ const Categoria = () => {
     );
 }
 
-export default withRouter(Categoria);
+export default withRouter(Produto);

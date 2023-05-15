@@ -45,7 +45,7 @@ export default function Header(params) {
             {/*end::Aside Toggle*/}
             {/*begin::Logo*/}
             <Link to="/painel" className="menu-link">
-              <img alt="Logo" src="#" className="logo-sticky max-h-60px" />
+              <img alt="Logo" src="img/logo.jpg" className="logo-sticky max-h-60px" />
             </Link>
             {/*end::Logo*/}
           </div>

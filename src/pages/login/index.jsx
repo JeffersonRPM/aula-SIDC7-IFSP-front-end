@@ -52,9 +52,10 @@ class Login extends Component {
         .then(response => {
             if(response.data.status === true){
                 const data = response.data;
+                console.log(data);
                 if (setLocalStorage(data) ){
                   this.setState({loading: false});
-                  Api.defaults.headers['Authorization'] = 'Basic ' + data.usuario.idUsuario
+                  Api.defaults.headers['Authorization'] = 'Basic ' + data.usuario.id_usuario
                   this.props.history.push('/painel')
                 }
             } else {
@@ -89,7 +90,7 @@ class Login extends Component {
               <div className="d-flex flex-column flex-root full-height">
                 <div className="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-row-fluid bg-white full-lg" id="kt_login">
                   <div className="login-aside d-flex flex-row-auto px-lg-0 px-5 pb-sm-40 flex-grow-1" style={{height: '100%', minHeight: '100%', backgroundSize: 'cover', maxWidth: '50%', backgroundRepeat: 'no-repeat', backgroundPosition: 'center',
-                  backgroundImage: 'url(imagem/login.jpg)'}}>
+                  backgroundImage: 'url(img/entrada.jpg)'}}>
                   </div>
                   <div className=" login-area-scroll">
                     <LoadingOverlay active={this.state.loading} spinner text='Carregando...' >
@@ -97,7 +98,7 @@ class Login extends Component {
                       <form className="form login-area-form" noValidate="novalidate" id="kt_login_signin_form">
                         <div className="mt-lg-10 pb-15">
                           <a href="index.html">
-                            <center><img alt="Logo" src="imagem/logo_stab_sul.jpg" className="logo-sticky mb-15" style={{width: '200px', textAlign: 'center', margin: 'auto'}} /></center>
+                            <center><img alt="Logo" src="img/logo.jpg" className="logo-sticky mb-15" style={{width: '200px', textAlign: 'center', margin: 'auto'}} /></center>
                           </a>
                           <h3 className="font-weight-bolder text-dark display5"><i className="icon-xl fas fa-lock" /> Painel Administrativo</h3>
                           <span className="text-muted font-size-h6">Gerencie de forma fácil e rápida.</span>
